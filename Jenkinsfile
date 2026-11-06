@@ -13,7 +13,24 @@ pipeline {
                 checkout scm
             }
         }
+stage('Install Docker Compose') {
+    steps {
+        echo 'Checking Docker Compose installation...'
 
+        sh '''
+            if ! docker compose version >/dev/null 2>&1; then
+                echo "Docker Compose is missing. Installing..."
+
+                sudo apt-get update
+                sudo apt-get install -y docker-compose-plugin
+            else
+                echo "Docker Compose is already installed."
+            fi
+
+            docker compose version
+        '''
+    }
+}
         stage('Check Docker Compose') {
             steps {
                 echo 'Checking Docker Compose installation...'
